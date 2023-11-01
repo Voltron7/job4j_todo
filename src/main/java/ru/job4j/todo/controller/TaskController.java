@@ -26,14 +26,9 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Task task, Model model) {
-        try {
-            taskService.save(task);
-            return "redirect:/tasks/list";
-        } catch (Exception exception) {
-            model.addAttribute("message", exception.getMessage());
-            return "errors/404";
-        }
+    public String create(@ModelAttribute Task task) {
+        taskService.save(task);
+        return "redirect:/tasks/list";
     }
 
     @GetMapping("/delete/{id}")
@@ -48,17 +43,12 @@ public class TaskController {
 
     @PostMapping("/update")
     public String update(@ModelAttribute Task task, Model model) {
-        try {
-            var isUpdated = taskService.update(task);
-            if (!isUpdated) {
-                model.addAttribute("message", "Задание с указанным идентификатором не найдено!");
-                return "errors/404";
-            }
-            return "redirect:/";
-        } catch (Exception exception) {
-            model.addAttribute("message", exception.getMessage());
+        var isUpdated = taskService.update(task);
+        if (!isUpdated) {
+            model.addAttribute("message", "Задание с указанным идентификатором не найдено!");
             return "errors/404";
         }
+        return "redirect:/";
     }
 
     @GetMapping("/{id}")
@@ -85,29 +75,23 @@ public class TaskController {
 
     @GetMapping("/done")
     public String getDonePage(Model model) {
-        model.addAttribute("tasks", taskService.findDone());
+        model.addAttribute("tasks", taskService.findByCondition(true));
         return "tasks/done";
     }
 
     @GetMapping("/new")
     public String getNewPage(Model model) {
-        model.addAttribute("tasks", taskService.findNew());
+        model.addAttribute("tasks", taskService.findByCondition(false));
         return "tasks/new";
     }
 
     @PostMapping("/complete")
     public String complete(@ModelAttribute Task task, Model model) {
-        try {
-            task.setDone(true);
-            var isUpdated = taskService.update(task);
-            if (!isUpdated) {
-                model.addAttribute("message", "Задание с указанным идентификатором не найдено!");
-                return "errors/404";
-            }
-            return "redirect:/tasks/list";
-        } catch (Exception exception) {
-            model.addAttribute("message", exception.getMessage());
+        var isUpdated = taskService.setDone(task);
+        if (!isUpdated) {
+            model.addAttribute("message", "Задание с указанным идентификатором не найдено!");
             return "errors/404";
         }
+        return "redirect:/tasks/list";
     }
 }

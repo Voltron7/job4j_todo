@@ -56,7 +56,8 @@ public class SimpleTaskRepository implements TaskRepository {
         try {
             session.beginTransaction();
             result = session.createQuery(
-                            "UPDATE Task SET description = :fDescription, done = :fDone WHERE id = :fId")
+                            "UPDATE Task SET title = :fTitle, description = :fDescription, done = :fDone WHERE id = :fId")
+                    .setParameter("fTitle", task.getTitle())
                     .setParameter("fDescription", task.getDescription())
                     .setParameter("fDone", task.isDone())
                     .setParameter("fId", task.getId())
@@ -94,7 +95,7 @@ public class SimpleTaskRepository implements TaskRepository {
         List<Task> taskList = new ArrayList<>();
         try {
             session.beginTransaction();
-            taskList = session.createQuery("from Task", Task.class).list();
+            taskList = session.createQuery("from Task order by id", Task.class).list();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
@@ -105,12 +106,13 @@ public class SimpleTaskRepository implements TaskRepository {
     }
 
     @Override
-    public List<Task> findDone() {
+    public List<Task> findByCondition(boolean expression) {
         Session session = sf.openSession();
         List<Task> taskList = new ArrayList<>();
         try {
             session.beginTransaction();
-            taskList = session.createQuery("from Task where done = true", Task.class).list();
+            taskList = session.createQuery("from Task where done = :fExpression order by id", Task.class)
+                    .setParameter("fExpression", expression).list();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
@@ -121,18 +123,20 @@ public class SimpleTaskRepository implements TaskRepository {
     }
 
     @Override
-    public List<Task> findNew() {
+    public boolean setDone(Task task) {
         Session session = sf.openSession();
-        List<Task> taskList = new ArrayList<>();
+        int result = 0;
         try {
             session.beginTransaction();
-            taskList = session.createQuery("from Task where done = false", Task.class).list();
+            result = session.createQuery("UPDATE Task SET done = :fDone WHERE id = :fId")
+                    .setParameter("fDone", true)
+                    .setParameter("fId", task.getId())
+                    .executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-        } finally {
-            session.close();
         }
-        return taskList;
+        session.close();
+        return result > 0;
     }
 }

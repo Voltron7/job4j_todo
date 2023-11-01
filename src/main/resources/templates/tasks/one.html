@@ -41,6 +41,7 @@
                     <thead>
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">Наименование</th>
                         <th scope="col">Описание</th>
                         <th scope="col">Дата создания</th>
                         <th scope="col">Статус</th>
@@ -49,6 +50,7 @@
                     <tbody>
                     <tr>
                         <td th:text="${task.id}" />
+                        <td th:text="${task.title}" />
                         <td th:text="${task.description}" />
                         <td th:text="${task.created}" />
                         <td th:text="${task.done}" />

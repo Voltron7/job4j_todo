@@ -14,10 +14,24 @@
 <p>При переходе по ссылке на конкретное задание, вы попадаете на страницу,
 где можно редактировать, удалить или выполнить задание с помощью соответствующих кнопок:</p>
 <img src="img/one.png"/> 
-<p>Нажав кнопку "Редактировать", вы переходите на страницу редактирования задания и можете изменить его описание:</p>
+<p>Нажав кнопку "Редактировать", вы переходите на страницу редактирования задания и можете изменить его наименование и 
+описание:</p>
 <img src="img/edit.png"/>
 
-Использованы Java 17, Hibernate, Maven 3.8, Spring (в частности Spring MVC и Spring Boot),
-Thymeleaf, Bootstrap, Liquibase, PostgreSQL 15.
+## Стек технологий
 
+Java 17, Hibernate 5, Maven 3.8, Spring 2.7 (в частности Spring MVC и Spring Boot),
+Thymeleaf, Bootstrap, Liquibase 4.15, PostgreSQL 15.
 
+## Требования к окружению
+
+Java 17, Maven 3.8, PostgreSQL 15.
+
+## Запуск проекта
+
+**Создать БД командой create database todo;**
+**Запустить проект командой mvn spring-boot:run**
+
+## Контакты
+
+aquastar.minsk@gmail.com

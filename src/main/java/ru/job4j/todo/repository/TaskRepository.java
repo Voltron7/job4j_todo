@@ -16,7 +16,7 @@ public interface TaskRepository {
 
     List<Task> findAll();
 
-    List<Task> findDone();
+    List<Task> findByCondition(boolean expression);
 
-    List<Task> findNew();
+    boolean setDone(Task task);
 }

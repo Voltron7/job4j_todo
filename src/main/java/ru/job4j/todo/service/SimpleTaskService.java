@@ -38,12 +38,12 @@ public class SimpleTaskService implements TaskService {
     }
 
     @Override
-    public List<Task> findDone() {
-        return taskRepository.findDone();
+    public List<Task> findByCondition(boolean expression) {
+        return taskRepository.findByCondition(expression);
     }
 
     @Override
-    public List<Task> findNew() {
-        return taskRepository.findNew();
+    public boolean setDone(Task task) {
+        return taskRepository.setDone(task);
     }
 }
