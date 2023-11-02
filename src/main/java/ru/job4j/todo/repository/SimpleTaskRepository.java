@@ -1,136 +1,63 @@
 package ru.job4j.todo.repository;
 
 import lombok.AllArgsConstructor;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
 public class SimpleTaskRepository implements TaskRepository {
-    private final SessionFactory sf;
+    private final CrudRepository crudRepository;
 
     @Override
     public Task save(Task task) {
-        Session session = sf.openSession();
-        try {
-            session.beginTransaction();
-            session.save(task);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
+        crudRepository.run(session -> session.persist(task));
         return task;
     }
 
     @Override
     public boolean deleteById(int id) {
-        Session session = sf.openSession();
-        int result = 0;
-        try {
-            session.beginTransaction();
-            result = session.createQuery(
-                            "DELETE Task WHERE id = :fId")
-                    .setParameter("fId", id)
-                    .executeUpdate();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
-        return result > 0;
+        crudRepository.run(
+                "delete from Task where id = :fId",
+                Map.of("fId", id)
+        );
+        return true;
     }
 
     @Override
     public boolean update(Task task) {
-        Session session = sf.openSession();
-        try {
-            session.beginTransaction();
-            session.update(task);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
+        crudRepository.run(session -> session.merge(task));
         return true;
     }
 
     @Override
     public Optional<Task> findById(int id) {
-        Session session = sf.openSession();
-        Optional<Task> result = Optional.empty();
-        try {
-            session.beginTransaction();
-            Query<Task> query = session.createQuery("from Task where id = :fId", Task.class)
-                    .setParameter("fId", id);
-            result = query.uniqueResultOptional();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
-        return result;
+        return crudRepository.optional(
+                "from Task where id = :fId", Task.class,
+                Map.of("fId", id)
+        );
     }
 
     @Override
     public List<Task> findAll() {
-        Session session = sf.openSession();
-        List<Task> taskList = new ArrayList<>();
-        try {
-            session.beginTransaction();
-            taskList = session.createQuery("from Task order by id", Task.class).list();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
-        return taskList;
+        return crudRepository.query("from Task order by id asc", Task.class);
     }
 
     @Override
     public List<Task> findByCondition(boolean expression) {
-        Session session = sf.openSession();
-        List<Task> taskList = new ArrayList<>();
-        try {
-            session.beginTransaction();
-            taskList = session.createQuery("from Task where done = :fExpression order by id", Task.class)
-                    .setParameter("fExpression", expression).list();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
-        return taskList;
+        return crudRepository.query("from Task where done = :fExpression order by id asc", Task.class,
+                Map.of("fExpression", expression)
+        );
     }
 
     @Override
     public boolean setDone(Task task) {
-        Session session = sf.openSession();
-        int result = 0;
-        try {
-            session.beginTransaction();
-            result = session.createQuery("UPDATE Task SET done = :fDone WHERE id = :fId")
-                    .setParameter("fDone", true)
-                    .setParameter("fId", task.getId())
-                    .executeUpdate();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
-        return result > 0;
+        crudRepository.run("update Task set done = :fDone where id = :fId",
+                Map.of("fDone", true, "fId", task.getId())
+        );
+        return true;
     }
 }
