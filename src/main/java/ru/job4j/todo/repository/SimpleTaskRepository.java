@@ -52,23 +52,16 @@ public class SimpleTaskRepository implements TaskRepository {
     @Override
     public boolean update(Task task) {
         Session session = sf.openSession();
-        int result = 0;
         try {
             session.beginTransaction();
-            result = session.createQuery(
-                            "UPDATE Task SET title = :fTitle, description = :fDescription, done = :fDone WHERE id = :fId")
-                    .setParameter("fTitle", task.getTitle())
-                    .setParameter("fDescription", task.getDescription())
-                    .setParameter("fDone", task.isDone())
-                    .setParameter("fId", task.getId())
-                    .executeUpdate();
+            session.update(task);
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
         } finally {
             session.close();
         }
-        return result > 0;
+        return true;
     }
 
     @Override
@@ -135,8 +128,9 @@ public class SimpleTaskRepository implements TaskRepository {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
         return result > 0;
     }
 }
