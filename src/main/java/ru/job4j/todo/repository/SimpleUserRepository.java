@@ -18,8 +18,9 @@ public class SimpleUserRepository implements UserRepository {
             crudRepository.run(session -> session.persist(user));
             return Optional.ofNullable(user);
         } catch (Exception e) {
-            return Optional.empty();
+            e.printStackTrace();
         }
+        return Optional.empty();
     }
 
     @Override
@@ -39,8 +40,9 @@ public class SimpleUserRepository implements UserRepository {
                     Map.of("fEmail", email, "fPassword", password)
             );
         } catch (Exception e) {
-            return Optional.empty();
+            e.printStackTrace();
         }
+        return Optional.empty();
     }
 
     @Override
