@@ -16,7 +16,7 @@ public class SimpleUserRepository implements UserRepository {
     public Optional<User> save(User user) {
         try {
             crudRepository.run(session -> session.persist(user));
-            return Optional.ofNullable(user);
+            return Optional.of(user);
         } catch (Exception e) {
             e.printStackTrace();
         }
