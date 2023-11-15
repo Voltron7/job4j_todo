@@ -38,28 +38,28 @@
         <form class="mt-3" th:action="@{/tasks/update}" method="post" th:object="${task}">
             <input type="hidden" name="id" th:field="*{id}">
             <input type="hidden" name="done" th:field="*{done}">
-            <div class="row mb-3">
-                <div class="col-9">
-                    <div class="mb-3">
-                        <label for="title" class="form-label"><b>Наименование задания</b></label>
-                        <input type="text" class="form-control" id="title" name="title" th:field="*{title}" placeholder="Введите краткое наименование задания">
-                    </div>
+            <div class="mb-3">
+                <div class="mb-3">
+                    <label for="title" class="form-label"><b>Наименование задания</b></label>
+                    <input type="text" class="form-control" id="title" name="title" th:field="*{title}" placeholder="Введите краткое наименование задания">
                 </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-9">
-                    <div class="mb-3">
-                        <label for="description" class="form-label"><b>Описание</b></label>
-                        <textarea class="form-control" id="description" name="description" th:field="*{description}" rows="16" placeholder="Опишите задание"></textarea>
-                    </div>
+                <div class="mb-3">
+                    <label for="priority"><b>Приоритет</b></label>
+                    <select class="form-control" id="priority" name="priorityId">
+                        <option th:each="priority : ${priorities}" th:value="${priority.id}" th:text="${priority.name}" th:field="*{priority}" th:selected="${priority.id==priorityId}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label"><b>Описание</b></label>
+                    <textarea class="form-control" id="description" name="description" th:field="*{description}" rows="15" placeholder="Опишите задание"></textarea>
                 </div>
             </div>
             <div class="mb-3 row">
                 <div class="col-6"></div>
                 <div class="col-6">
                     <div class="row">
-                        <div class="col-4"><a class="btn btn-danger w-100" th:href="@{/}">Отмена</a></div>
-                        <div class="col-4"><button class="btn btn-primary w-100" type="submit">Обновить</button></div>
+                        <div class="col-6"><a class="btn btn-danger w-100" th:href="@{/}">Отмена</a></div>
+                        <div class="col-6"><button class="btn btn-primary w-100" type="submit">Обновить</button></div>
                     </div>
                 </div>
             </div>

@@ -36,19 +36,19 @@ public class SimpleTaskRepository implements TaskRepository {
     @Override
     public Optional<Task> findById(int id) {
         return crudRepository.optional(
-                "from Task where id = :fId", Task.class,
+                "from Task f JOIN FETCH f.priority where f.id = :fId", Task.class,
                 Map.of("fId", id)
         );
     }
 
     @Override
     public List<Task> findAll() {
-        return crudRepository.query("from Task order by id asc", Task.class);
+        return crudRepository.query("from Task f JOIN FETCH f.priority order by f.id asc", Task.class);
     }
 
     @Override
     public List<Task> findByCondition(boolean expression) {
-        return crudRepository.query("from Task where done = :fExpression order by id asc", Task.class,
+        return crudRepository.query("from Task f JOIN FETCH f.priority where done = :fExpression order by f.id asc", Task.class,
                 Map.of("fExpression", expression)
         );
     }
