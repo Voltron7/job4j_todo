@@ -6,8 +6,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
+
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -15,6 +18,7 @@ import ru.job4j.todo.service.TaskService;
 public class TaskController {
     private final TaskService taskService;
     private final PriorityService priorityService;
+    private final CategoryService categoryService;
 
     @GetMapping("/list")
     public String getAll(Model model) {
@@ -25,12 +29,14 @@ public class TaskController {
     @GetMapping("/create")
     public String getCreatePage(Model model) {
         model.addAttribute("priorities", priorityService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
         return "tasks/create";
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Task task, @SessionAttribute User user) {
+    public String create(@ModelAttribute Task task, @SessionAttribute User user, @RequestParam List<Integer> categoriesIds) {
         task.setUser(user);
+        task.setCategories(categoryService.findByCategoriesIdsList(categoriesIds));
         taskService.save(task);
         return "redirect:/tasks/list";
     }
@@ -46,8 +52,9 @@ public class TaskController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Task task, Model model, @SessionAttribute User user) {
+    public String update(@ModelAttribute Task task, Model model, @SessionAttribute User user, @RequestParam List<Integer> categoriesIds) {
         task.setUser(user);
+        task.setCategories(categoryService.findByCategoriesIdsList(categoriesIds));
         var isUpdated = taskService.update(task);
         if (!isUpdated) {
             model.addAttribute("message", "Задание с указанным идентификатором не найдено!");
@@ -76,6 +83,7 @@ public class TaskController {
         }
         model.addAttribute("task", taskOptional.get());
         model.addAttribute("priorities", priorityService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
         return "tasks/edit";
     }
 

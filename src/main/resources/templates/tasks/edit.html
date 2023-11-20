@@ -50,6 +50,12 @@
                     </select>
                 </div>
                 <div class="mb-3">
+                    <label for="categories"><b>Категория</b></label>
+                    <select class="form-control" id="categories" name="categoriesIds">
+                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:field="*{categories}" th:selected="${category.id==categoryId}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
                     <label for="description" class="form-label"><b>Описание</b></label>
                     <textarea class="form-control" id="description" name="description" th:field="*{description}" rows="15" placeholder="Опишите задание"></textarea>
                 </div>

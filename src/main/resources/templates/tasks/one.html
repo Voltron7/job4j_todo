@@ -43,6 +43,7 @@
                         <th scope="col">#</th>
                         <th scope="col">Наименование</th>
                         <th scope="col">Приоритет</th>
+                        <th scope="col">Категория</th>
                         <th scope="col">Пользователь</th>
                         <th scope="col">Описание</th>
                         <th scope="col">Дата создания</th>
@@ -54,6 +55,8 @@
                         <td th:text="${task.id}" />
                         <td th:text="${task.title}" />
                         <td th:text="${task.priority.name}" />
+                        <td th:each="category: ${task.categories}"
+                            th:text="${category.name}"></td>
                         <td th:text="${task.user.name}" />
                         <td th:text="${task.description}" />
                         <td th:text="${task.created}" />
