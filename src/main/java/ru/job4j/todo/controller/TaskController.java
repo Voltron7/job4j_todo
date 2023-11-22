@@ -9,7 +9,6 @@ import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
-
 import java.util.List;
 
 @Controller
@@ -36,7 +35,7 @@ public class TaskController {
     @PostMapping("/create")
     public String create(@ModelAttribute Task task, @SessionAttribute User user, @RequestParam List<Integer> categoriesIds) {
         task.setUser(user);
-        task.setCategories(categoryService.findByCategoriesIdsList(categoriesIds));
+        task.getCategories().addAll(categoryService.findByCategoriesIdsList(categoriesIds));
         taskService.save(task);
         return "redirect:/tasks/list";
     }
@@ -54,7 +53,7 @@ public class TaskController {
     @PostMapping("/update")
     public String update(@ModelAttribute Task task, Model model, @SessionAttribute User user, @RequestParam List<Integer> categoriesIds) {
         task.setUser(user);
-        task.setCategories(categoryService.findByCategoriesIdsList(categoriesIds));
+        task.getCategories().addAll(categoryService.findByCategoriesIdsList(categoriesIds));
         var isUpdated = taskService.update(task);
         if (!isUpdated) {
             model.addAttribute("message", "Задание с указанным идентификатором не найдено!");
