@@ -3,14 +3,13 @@ package ru.job4j.todo.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.TimeZone;
+import static ru.job4j.todo.util.TaskZone.getAllTimeZones;
 
 @Controller
 @AllArgsConstructor
@@ -19,12 +18,15 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/register")
-    public String getRegistrationPage() {
+    public String getRegistrationPage(Model model) {
+        model.addAttribute("defaultTimeZone", TimeZone.getDefault().getID());
+        model.addAttribute("timeZones", getAllTimeZones());
         return "users/register";
     }
 
     @PostMapping("/register")
-    public String register(Model model, @ModelAttribute User user) {
+    public String register(Model model, @ModelAttribute User user, @RequestParam("timeZone") String zone) {
+        user.setTimezone(zone);
         var savedUser = userService.save(user);
         if (savedUser.isEmpty()) {
             model.addAttribute("message", "Пользователь с такой почтой уже существует");

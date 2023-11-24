@@ -17,4 +17,6 @@ public class User {
     @EqualsAndHashCode.Include
     private String email;
     private String password;
+    @Column(name = "user_zone")
+    private String timezone;
 }

@@ -59,7 +59,7 @@
                             th:text="${category.name}"></td>
                         <td th:text="${task.user.name}" />
                         <td th:text="${task.description}" />
-                        <td th:text="${task.created}" />
+                        <td th:text="${#temporals.format (task.created, 'HH:mm dd-MM-yyyy')}"></td>
                         <td th:text="${task.done}" />
                     </tr>
                     </tbody>

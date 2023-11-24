@@ -33,6 +33,13 @@
                 <input type="text" class="form-control" id="name" name="name" placeholder="Иван" required>
             </div>
             <div class="mb-3">
+                <label for="timezone" class="form-label"><b>Часовой пояс</b></label>
+                <select class="form-control" id="timezone" name="timeZone">
+                    <option th:value="${defaultTimeZone}">Часовой пояс по умолчанию</option>
+                    <option th:each="zone : ${timeZones}" th:value="${zone.ID}" th:text="${zone.ID}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
                 <label for="email" class="form-label"><b>Почта</b></label>
                 <input type="text" class="form-control" id="email" name="email" placeholder="ivan@mail.ru" required>
             </div>
