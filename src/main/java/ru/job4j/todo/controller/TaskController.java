@@ -25,7 +25,7 @@ public class TaskController {
     public String getAll(Model model, @SessionAttribute User user) {
         List<Task> tasks = taskService.findAll();
         for (Task task : tasks) {
-            task.setCreated(TaskZone.setUsersTimeZone(task, user));
+            task.setCreated(TaskZone.setUsersLocalDateTime(task, user));
         }
         model.addAttribute("tasks", tasks);
         return "tasks/list";
@@ -71,7 +71,11 @@ public class TaskController {
     @GetMapping("/{id}")
     public String getById(Model model, @PathVariable int id, @SessionAttribute User user) {
         var taskOptional = taskService.findById(id);
-        taskOptional.get().setCreated(TaskZone.setUsersTimeZone(taskOptional.get(), user));
+        if (taskOptional.isEmpty()) {
+            model.addAttribute("message", "Задание с указанным идентификатором не найдено!");
+            return "errors/404";
+        }
+        taskOptional.get().setCreated(TaskZone.setUsersLocalDateTime(taskOptional.get(), user));
         model.addAttribute("task", taskOptional.get());
         return "tasks/one";
     }
@@ -93,7 +97,7 @@ public class TaskController {
     public String getDonePage(Model model, @SessionAttribute User user) {
         List<Task> tasks = taskService.findByCondition(true);
         for (Task task : tasks) {
-            task.setCreated(TaskZone.setUsersTimeZone(task, user));
+            task.setCreated(TaskZone.setUsersLocalDateTime(task, user));
         }
         model.addAttribute("tasks", tasks);
         return "tasks/done";
@@ -103,7 +107,7 @@ public class TaskController {
     public String getNewPage(Model model, @SessionAttribute User user) {
         List<Task> tasks = taskService.findByCondition(false);
         for (Task task : tasks) {
-            task.setCreated(TaskZone.setUsersTimeZone(task, user));
+            task.setCreated(TaskZone.setUsersLocalDateTime(task, user));
         }
         model.addAttribute("tasks", tasks);
         return "tasks/new";

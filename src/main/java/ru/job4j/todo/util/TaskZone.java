@@ -12,7 +12,7 @@ import java.util.TimeZone;
 @UtilityClass
 public final class TaskZone {
 
-    public static LocalDateTime setUsersTimeZone(Task task, User user) {
+    public static LocalDateTime setUsersLocalDateTime(Task task, User user) {
         ZoneId defaultTimeZoneId = TimeZone.getDefault().toZoneId();
         ZoneId usersTimeZoneId = ZoneId.of(user.getTimezone());
         return task.getCreated()
